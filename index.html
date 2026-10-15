@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ms van den Boom — Sewing Portfolio</title>
+  <meta name="description" content="An archive of handmade garments, quilts and accessories by Ms. Van den Boom — makes, pattern experiments and lessons learned.">
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#makes">Skip to makes</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <!-- Logo: recreates the woven "Ms van den Boom · Handmade ATX" sew-in label -->
+      <a class="label-mark" href="#top" aria-label="Ms van den Boom, handmade ATX — back to top">
+        <svg class="label-stitch" aria-hidden="true" viewBox="0 0 10 40" preserveAspectRatio="none"><path d="M5 0L8 2.5 2 5 8 7.5 2 10 8 12.5 2 15 8 17.5 2 20 8 22.5 2 25 8 27.5 2 30 8 32.5 2 35 8 37.5 5 40"/></svg>
+        <span class="label-text">
+          <span class="label-name">Ms van den Boom</span>
+          <span class="label-sub">Handmade ATX</span>
+        </span>
+        <svg class="label-stitch" aria-hidden="true" viewBox="0 0 10 40" preserveAspectRatio="none"><path d="M5 0L8 2.5 2 5 8 7.5 2 10 8 12.5 2 15 8 17.5 2 20 8 22.5 2 25 8 27.5 2 30 8 32.5 2 35 8 37.5 5 40"/></svg>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <ul>
+          <li><a href="#makes">Makes</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ============ INTRO ============ -->
+    <section class="intro wrap" aria-labelledby="intro-heading">
+      <div class="intro-photo">
+        <!--
+          ✂ REPLACE YOUR PORTRAIT HERE
+          1. Put your photo in the images/ folder, e.g. images/portrait.jpg (portrait/4:5 crop works best).
+          2. Change src="images/portrait-placeholder.svg" to src="images/portrait.jpg".
+          3. Update the alt text to describe the photo.
+        -->
+        <img src="images/portrait-placeholder.svg" alt="Placeholder portrait of Ms. Van den Boom" width="400" height="500">
+      </div>
+      <div class="intro-copy">
+        <h1 id="intro-heading" class="intro-title">Hi, I’m Ms. Van den Boom.</h1>
+        <p>I’m a home sewist who loves thoughtful clothes, good fabrics, and the process of making. This is a collection of my makes, pattern experiments, and the little lessons in between.</p>
+      </div>
+    </section>
+
+    <!-- ============ MAKES (portfolio) ============
+         The grid and filters are built by script.js from the data in projects.js.
+         You don't need to edit this section to add a project. -->
+    <section id="makes" class="makes wrap" aria-labelledby="makes-heading">
+      <div class="section-head">
+        <h2 id="makes-heading" class="section-label">Makes</h2>
+        <p class="makes-count" id="makes-count" aria-live="polite"></p>
+      </div>
+      <div class="filters" id="filters" role="group" aria-label="Filter makes by category"></div>
+      <ul class="grid" id="grid"></ul>
+      <p class="makes-empty" id="makes-empty" hidden>Nothing in this category yet — check back soon.</p>
+      <noscript><p class="makes-empty">The portfolio needs JavaScript to display. Please enable it to browse the makes.</p></noscript>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section id="about" class="about wrap" aria-labelledby="about-heading">
+      <div class="section-head">
+        <h2 id="about-heading" class="section-label">About</h2>
+      </div>
+      <div class="about-inner">
+        <div class="about-photo">
+          <!-- ✂ REPLACE: put a studio / sewing photo in images/ and update src + alt -->
+          <img src="images/studio-placeholder.svg" alt="Placeholder — a spool of olive thread on the sewing table" width="400" height="500" loading="lazy">
+        </div>
+        <div class="about-copy">
+          <p class="about-lede">I started sewing to make clothes that actually fit, and stayed for the slow, satisfying rhythm of it.</p>
+          <p>Most of what I make is everyday clothing — trousers, simple tops, the occasional jacket — in natural fibres I want to wear for years. I like working from indie patterns, changing them until they feel like mine, and keeping notes on what worked so the next version is better.</p>
+          <p>Sewing has taught me patience, a lot about fabric, and to enjoy the in-between: the pressing, the basting, the unpicking. This archive is where I keep track of it all.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section id="contact" class="contact wrap" aria-labelledby="contact-heading">
+      <div class="section-head">
+        <h2 id="contact-heading" class="section-label">Contact</h2>
+      </div>
+      <div class="contact-inner">
+        <p class="contact-lede">Questions about a pattern, a fabric, or a make? I’d love to hear from you.</p>
+        <!-- ✂ REPLACE: update the email address, Instagram handle and GitHub username below -->
+        <dl class="contact-list">
+          <div>
+            <dt>Email</dt>
+            <dd><a href="mailto:hello@example.com">hello@example.com</a></dd>
+          </div>
+          <div>
+            <dt>Instagram</dt>
+            <dd><a href="https://www.instagram.com/your-handle/">@your-handle</a></dd>
+          </div>
+          <div>
+            <dt>GitHub</dt>
+            <dd><a href="https://github.com/your-username">your-username</a></dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <a class="label-mark" href="#top" aria-label="Ms van den Boom, handmade ATX — back to top">
+        <svg class="label-stitch" aria-hidden="true" viewBox="0 0 10 40" preserveAspectRatio="none"><path d="M5 0L8 2.5 2 5 8 7.5 2 10 8 12.5 2 15 8 17.5 2 20 8 22.5 2 25 8 27.5 2 30 8 32.5 2 35 8 37.5 5 40"/></svg>
+        <span class="label-text">
+          <span class="label-name">Ms van den Boom</span>
+          <span class="label-sub">Handmade ATX</span>
+        </span>
+        <svg class="label-stitch" aria-hidden="true" viewBox="0 0 10 40" preserveAspectRatio="none"><path d="M5 0L8 2.5 2 5 8 7.5 2 10 8 12.5 2 15 8 17.5 2 20 8 22.5 2 25 8 27.5 2 30 8 32.5 2 35 8 37.5 5 40"/></svg>
+      </a>
+      <p>© <span id="year">2026</span> Ms van den Boom · Made by hand</p>
+      <!-- Photo disclaimer -->
+      <p class="footer-note">All the sewing here is my own. I use AI only for small photo edits, like color correction and a uniform background, so each piece looks just as it does in person.</p>
+    </div>
+  </footer>
+
+  <!-- ============ PROJECT VIEWER (modal) ============ -->
+  <dialog id="viewer" class="viewer" aria-labelledby="viewer-title">
+    <div class="viewer-bar">
+      <button type="button" class="viewer-back" data-close>
+        <svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        Back to makes
+      </button>
+      <p class="viewer-context">
+        <span class="sr-only">Viewing category:</span>
+        <span id="viewer-filter" class="viewer-filter">Featured</span>
+        <span aria-hidden="true">·</span>
+        <span id="viewer-position">1 of 1</span>
+      </p>
+      <div class="viewer-controls">
+        <button type="button" class="icon-btn" id="viewer-prev" aria-label="Previous make">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+        <button type="button" class="icon-btn" id="viewer-next" aria-label="Next make">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+        <button type="button" class="icon-btn" data-close aria-label="Close">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Carousel filmstrip: every make in the current filter (filled by script.js) -->
+    <nav class="filmstrip" id="viewer-filmstrip" aria-label="Makes in this category">
+      <ul class="strip" id="viewer-strip"></ul>
+    </nav>
+
+    <div class="viewer-scroll" id="viewer-scroll">
+      <div class="viewer-body" id="viewer-body">
+        <div class="gallery" id="viewer-gallery">
+          <figure class="gallery-main">
+            <img id="viewer-image" src="" alt="" width="800" height="1000">
+          </figure>
+          <ul class="thumbs" id="viewer-thumbs" aria-label="More photos"></ul>
+        </div>
+
+        <header class="viewer-head">
+          <h2 id="viewer-title" class="viewer-title" tabindex="-1"></h2>
+          <p id="viewer-company" class="viewer-company"></p>
+          <p id="viewer-description" class="viewer-description"></p>
+        </header>
+      </div>
+    </div>
+    <p class="sr-only" id="viewer-live" aria-live="polite"></p>
+  </dialog>
+
+  <script src="projects.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
