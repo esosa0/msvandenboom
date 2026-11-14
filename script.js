@@ -11,6 +11,21 @@
   const projects = PROJECTS;
   const byId = new Map(projects.map((p) => [p.id, p]));
 
+  // Each make gets a shareable address like #make/harlequin-tote, built from its id
+  // (so renaming a make's title never breaks a link). Title-based links still work too.
+  const titleSlug = (p) => p.title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const slugOf = (p) => p.id;
+  const bySlug = new Map(projects.map((p) => [titleSlug(p), p]));
+  const HASH_PREFIX = "#make/";
+  const pageTitle = document.title;
+  // Clean page path: "/index.html" shows as "/". Kept as-is for files opened
+  // straight from disk, where the folder alone wouldn't load the site.
+  const basePath = location.protocol.startsWith("http")
+    ? location.pathname.replace(/\/index\.html$/, "/")
+    : location.pathname;
+  const addressFor = (hash = "") => basePath + location.search + hash;
+
   const $ = (id) => document.getElementById(id);
   const filtersEl = $("filters");
   const gridEl = $("grid");
@@ -27,8 +42,8 @@
   const mainImg = $("viewer-image");
   const thumbsEl = $("viewer-thumbs");
   const titleEl = $("viewer-title");
-  const companyEl = $("viewer-company");
   const descriptionEl = $("viewer-description");
+  const detailsEl = $("viewer-details");
   const liveEl = $("viewer-live");
   const bodyEl = $("viewer-body");
   const filmstripEl = $("viewer-filmstrip");
@@ -60,6 +75,16 @@
 
   const labelFor = (key) => (CATEGORIES.find((c) => c.key === key) || { label: key }).label;
   const matches = (p, key) => key === "all" || (p.categories || []).includes(key);
+  const featuredRank = (p) => {
+    const i = (typeof FEATURED_ORDER !== "undefined" ? FEATURED_ORDER : []).indexOf(p.id);
+    return i === -1 ? Infinity : i;
+  };
+  // Projects in a filter, in display order.
+  function listFor(key) {
+    const list = projects.filter((p) => matches(p, key));
+    if (key === "featured") list.sort((a, b) => featuredRank(a) - featuredRank(b)); // stable sort keeps PROJECTS order for ties
+    return list;
+  }
   const hasValue = (v) => v != null && v !== "" && !(Array.isArray(v) && v.length === 0);
 
   function imagesOf(p) {
@@ -71,27 +96,13 @@
     );
   }
 
-  function companyNode(p, tag = "span") {
-    return p.company
-      ? h(tag, { class: "make-company" }, p.company)
-      : h(tag, { class: "make-company is-missing" }, "Pattern company TBC");
-  }
-
-  function swatchRow(p) {
-    if (!hasValue(p.swatches)) return null;
-    return h("span", { class: "swatches", "aria-hidden": "true" },
-      p.swatches.map((s) => h("span", { class: "swatch", style: `background:${s.color}`, title: s.name })));
-  }
-
   function card(p, { eager = false, onClick }) {
     const cover = imagesOf(p)[0];
     return h("button", { type: "button", class: "make-link", "aria-haspopup": "dialog", onclick: onClick },
       h("span", { class: "make-media" },
         cover && h("img", { src: cover.src, alt: "", width: 800, height: 1000, loading: eager ? "eager" : "lazy", decoding: "async" })),
       h("span", { class: "make-caption" },
-        h("span", { class: "make-title" }, p.title),
-        companyNode(p),
-        swatchRow(p)));
+        h("span", { class: "make-title" }, p.title)));
   }
 
   /* ---------- filters & grid ---------- */
@@ -113,7 +124,7 @@
 
   function renderGrid() {
     gridEl.replaceChildren(...projects.map((p, i) => {
-      const btn = card(p, { eager: i < 4, onClick: () => openViewer(p.id, btn) });
+      const btn = card(p, { eager: i < 4, onClick: () => openViewer(p.id, btn, { push: true }) });
       cardButtons.set(p.id, btn);
       return h("li", { class: "make", "data-id": p.id }, btn);
     }));
@@ -122,6 +133,8 @@
   function applyFilter(key) {
     activeFilter = key;
     filtersEl.querySelectorAll(".filter").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.filter === key)));
+    const ordered = listFor(key === "featured" ? "featured" : "all");
+    gridEl.append(...ordered.map((p) => cardButtons.get(p.id).parentNode));
     let shown = 0;
     gridEl.querySelectorAll(".make").forEach((li) => {
       const visible = matches(byId.get(li.dataset.id), key);
@@ -134,9 +147,9 @@
 
   /* ---------- viewer ---------- */
 
-  function openViewer(id, trigger) {
+  function openViewer(id, trigger, { push = false } = {}) {
     let filter = activeFilter;
-    let list = projects.filter((p) => matches(p, filter));
+    let list = listFor(filter);
     if (!list.some((p) => p.id === id)) {
       filter = "all";
       list = projects.slice();
@@ -145,6 +158,10 @@
     view.filter = filter;
     view.returnFocus = trigger || document.activeElement;
 
+    if (push) {
+      history.pushState(null, "", addressFor(HASH_PREFIX + slugOf(byId.get(id))));
+      pushedEntry = true;
+    }
     showProject(list.findIndex((p) => p.id === id));
     if (!viewer.open) {
       document.documentElement.classList.add("viewer-open");
@@ -165,9 +182,9 @@
     prevBtn.disabled = nextBtn.disabled = n < 2;
 
     titleEl.textContent = p.title;
-    companyEl.textContent = p.company || "Pattern company TBC";
     descriptionEl.textContent = p.description || "";
     descriptionEl.hidden = !p.description;
+    renderDetails(p);
 
     renderGallery(p);
     renderStrip();
@@ -175,6 +192,39 @@
 
     scroller.scrollTop = 0;
     liveEl.textContent = `${p.title}, ${view.index + 1} of ${n}`;
+    document.title = `${p.title} | ${pageTitle}`;
+    const hash = HASH_PREFIX + slugOf(p);
+    if (location.hash !== hash || location.pathname !== basePath) history.replaceState(null, "", addressFor(hash));
+  }
+
+  function renderDetails(p) {
+    const skills = (p.skills || []).filter(Boolean);
+    const rows = [];
+    // One pattern (pattern / company / patternUrl / patternNote), or several in `patterns`.
+    const patterns = (p.patterns && p.patterns.length ? p.patterns
+      : [{ name: p.pattern, company: p.company, url: p.patternUrl, note: p.patternNote }])
+      .filter((x) => x.name || x.company);
+    if (patterns.length) {
+      rows.push(h("div", { class: "detail" }, h("dt", null, patterns.length > 1 ? "Patterns" : "Pattern"),
+        h("dd", null, ...patterns.map((x) => h("span", { class: "pattern-line" },
+          x.name && x.url ? h("a", { href: x.url, target: "_blank", rel: "noopener" }, x.name) : x.name,
+          x.company && (x.name ? ` by ${x.company}` : x.company),
+          x.note && h("span", { class: "pattern-note" }, ` (${x.note})`))))));
+    }
+    const mods = (p.modifications || []).filter(Boolean);
+    if (mods.length) rows.push(h("div", { class: "detail" }, h("dt", null, "Modifications"),
+      h("dd", null, h("ul", { class: "mod-list" }, ...mods.map((m) => h("li", null, m))))));
+    if (p.fabric) rows.push(h("div", { class: "detail" }, h("dt", null, "Fabric"), h("dd", null, p.fabric)));
+    const features = (p.features || []).filter(Boolean);
+    if (features.length) {
+      const text = features.join(", ");
+      rows.push(h("div", { class: "detail" }, h("dt", null, "Features"),
+        h("dd", null, text[0].toUpperCase() + text.slice(1))));
+    }
+    if (skills.length) rows.push(h("div", { class: "detail" }, h("dt", null, "Skills"),
+      h("dd", null, h("ul", { class: "skill-list" }, ...skills.map((s) => h("li", null, s))))));
+    detailsEl.replaceChildren(...rows);
+    detailsEl.hidden = !rows.length;
   }
 
   const step = (delta) => showProject(view.index + delta, delta);
@@ -237,6 +287,13 @@
 
   viewer.addEventListener("close", () => {
     document.documentElement.classList.remove("viewer-open");
+    document.title = pageTitle;
+    // Drop the #make/... address: step back if we added it, otherwise just clear it.
+    if (location.hash.startsWith(HASH_PREFIX)) {
+      if (pushedEntry) history.back();
+      else history.replaceState(null, "", addressFor());
+    }
+    pushedEntry = false;
     // Return focus to the last make viewed if it's visible in the grid.
     const btn = view.project && cardButtons.get(view.project.id);
     const target = btn && !btn.closest(".make").hidden ? btn : view.returnFocus;
@@ -310,11 +367,43 @@
     }
   }
 
+  /* ---------- addresses ---------- */
+
+  let pushedEntry = false; // true when opening a make added a history entry
+
+  function makeFromHash() {
+    if (!location.hash.startsWith(HASH_PREFIX)) return null;
+    const key = decodeURIComponent(location.hash.slice(HASH_PREFIX.length));
+    return byId.get(key) || bySlug.get(key) || null;
+  }
+
+  // Back/forward buttons and edited addresses open or close the viewer to match.
+  window.addEventListener("popstate", () => {
+    const p = makeFromHash();
+    if (p) {
+      pushedEntry = false;
+      if (!viewer.open) openViewer(p.id);
+      else if (view.project !== p) {
+        const i = view.list.indexOf(p);
+        if (i >= 0) showProject(i);
+        else openViewer(p.id);
+      }
+    } else if (viewer.open) {
+      pushedEntry = false;
+      viewer.close();
+    }
+  });
+
   /* ---------- init ---------- */
 
   renderFilters();
   renderGrid();
   applyFilter(DEFAULT_FILTER);
+  const linked = makeFromHash();
+  if (linked) openViewer(linked.id);
+  else if (location.hash.startsWith(HASH_PREFIX) || location.pathname !== basePath) {
+    history.replaceState(null, "", addressFor(location.hash.startsWith(HASH_PREFIX) ? "" : location.hash));
+  }
   const year = $("year");
   if (year) year.textContent = new Date().getFullYear();
 })();

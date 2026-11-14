@@ -6,8 +6,8 @@ A one-page sewing portfolio built with plain HTML, CSS and JavaScript. No build 
 index.html     page structure: header, intro, makes, about, contact, project viewer
 styles.css     all styling (colours and fonts are variables at the top)
 projects.js    ← YOUR PORTFOLIO DATA: every make lives here
-script.js      filtering, the project viewer, tabs, keyboard support
-images/        photos (currently SVG placeholders)
+script.js      filtering, the project viewer, make links, keyboard support
+images/        photos
 ```
 
 ---
@@ -35,50 +35,49 @@ Open **`projects.js`**. Copy an existing `{ ... },` block inside `PROJECTS`, pas
 {
   id: "ash-jeans",                    // unique, lowercase, dashes instead of spaces
   title: "Ash Jeans",
-  company: "Megan Nielsen",           // or "Self-drafted"
   categories: ["featured", "bottoms"],// see list below; a make can be in several
   images: [                           // the FIRST image is the cover in the grid
     { src: "images/ash-jeans-1.jpg", alt: "Indigo Ash Jeans, front view" },
     { src: "images/ash-jeans-2.jpg", alt: "Back pockets and yoke" },
   ],
-  swatches: [                         // optional little colour squares
-    { name: "Indigo denim", color: "#3b4a63" },
-  ],
-  description: "One or two sentences shown at the top of the Featured tab.",
+  description: "One or two sentences shown under the title in the viewer.",
 
-  // Details tab
+  // Shown in the viewer, in this order (empty rows are hidden)
   pattern: "Ash Jeans",
+  company: "Megan Nielsen",           // or leave empty for self-drafted
+  patternUrl: "https://...",          // optional: makes the pattern name a link
+  patternNote: "hacked into shorts",  // optional: short note after the pattern name
+  // patterns: [{ name, company, url, note }, ...]  // use instead when a make combines patterns
+  modifications: ["Shortened by 2\"", "Added ½\" to the back rise"],
+  fabric: "Stretch denim",
+  features: ["fly front", "back yoke"],       // what the make has; shown as a sentence
+  skills: ["Zip insertion", "Topstitching"],  // techniques used; shown as pills (3 to 5)
+
+  // Not shown on the site yet, handy for your own records
   view: "Straight leg",
   size: "10",
   yardage: "2 yd",
   notions: "Jeans button, rivets, zip",
   interfacing: "Waistband",
   stretch: "20% horizontal",
-  dateMade: "2025-09",                // YYYY-MM → shown as "September 2025"
-
-  // Fabric & Fit tab
-  fabric: "Stretch denim",
+  dateMade: "2025-09",
   fabricSource: "Fabric shop name",
   fiber: "98% cotton, 2% elastane",
   fabricWeight: "11 oz",
   fitNotes: "How it fits.",
   sizing: "Sizing observations.",
-
-  // Modifications tab (the first two also appear on the Featured tab)
-  modifications: ["Shortened by 2\"", "Added ½\" to the back rise"],
-
   makeAgain: true,                    // true or false
   rating: 4,                          // 1–5
   notes: "Free-form notes.\n\nA blank line starts a new paragraph.",
 },
 ```
 
-Category keys: `featured`, `tops`, `bottoms`, `dresses`, `outerwear`, `accessories`, `quilts`, `other`. Add `featured` to any make you want on the default view.
+Category keys: `featured`, `tops`, `bottoms`, `dresses` (dresses and jumpsuits), `outerwear`, `swimwear`, `kids`, `bags`, `accessories`, `quilting`, `other`. Add `featured` to any make you want on the default view, then add its id to `FEATURED_ORDER` near the top of `projects.js` to set where it appears.
 
 Tips:
 - Any field can be `""` or left out. Empty rows are hidden automatically.
-- To use your own wording for "Major modifications" on the Featured tab, add `majorModifications: "Your text"`.
-- If `company` is empty, the site shows "Pattern company TBC". The Wildwood Jacket and Lockhart Top are like this now, so fill those in.
+- `company` and `pattern` show together in the viewer's Pattern row ("Anna Bag by Sallie Tomato"). If both are empty, the row is hidden.
+- Each make has its own link built from its `id`, like `yoursite.com/#make/harlequin-tote`. Changing a title doesn't break the link, but changing an `id` does, so leave ids alone once you've shared links.
 - To rename, add or remove a filter button, edit the `CATEGORIES` list at the top of `projects.js`.
 - Watch the commas: every `{ ... }` block ends with `},`, and text containing `"` needs a backslash (`\"`).
 
@@ -92,7 +91,6 @@ Put photos in the **`images/`** folder and refer to them as `images/your-file.jp
 - **Size:** export at about 1600px on the long edge and compress with something like [Squoosh](https://squoosh.app). Aim for under 300 KB per photo so the site stays fast.
 - **Naming:** `project-id-1.jpg`, `project-id-2.jpg`, … keeps things tidy.
 - **Alt text:** describe each photo briefly (e.g. "Olive wide-leg trousers, side view"). Screen-reader users rely on it.
-- Once a project uses real photos, you can delete its placeholder `.svg` files.
 
 ---
 
@@ -100,18 +98,17 @@ Put photos in the **`images/`** folder and refer to them as `images/your-file.jp
 
 Both are in **`index.html`**. Search for these comments:
 
-- **Intro:** `REPLACE YOUR PORTRAIT HERE` marks the small portrait. Just below it are the "Hi, I'm Ms. Van den Boom." heading and intro paragraph.
-- **About:** the `ABOUT` section has the studio photo (`✂ REPLACE` comment) and three paragraphs.
+- **Intro:** the `INTRO` section has the portrait (`images/portrait.jpg`), the "Hi, I'm Ms. Van den Boom." heading and the intro paragraph.
+- **About:** the `ABOUT` section has the studio photo (`images/studio.jpg`) and the About paragraphs.
 
 ---
 
 ## 5. Change contact information
 
-In **`index.html`**, find the `CONTACT` section (`✂ REPLACE` comment). Update:
+In **`index.html`**, find the `CONTACT` section. Update:
 
-- the email in both `mailto:hello@example.com` and the visible text
-- the Instagram link and `@your-handle`
-- the GitHub link and username (or delete that whole `<div>…</div>` block)
+- the email in both the `mailto:` link and the visible text
+- the Instagram link and handle
 
 ---
 
