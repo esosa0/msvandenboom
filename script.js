@@ -74,16 +74,42 @@
   }
 
   const labelFor = (key) => (CATEGORIES.find((c) => c.key === key) || { label: key }).label;
-  const matches = (p, key) => key === "all" || (p.categories || []).includes(key);
+  // Featured always fills whole rows: at least 6 makes and at least two full rows
+  // of the grid. Hand-picked makes (tagged "featured", ordered by FEATURED_ORDER)
+  // come first, then the newest makes fill any remaining spots.
+  let featuredIds = new Set();
+  const matches = (p, key) => key === "all" ||
+    (key === "featured" ? featuredIds.has(p.id) : (p.categories || []).includes(key));
   const featuredRank = (p) => {
+    if (!(p.categories || []).includes("featured")) return 2e6;
     const i = (typeof FEATURED_ORDER !== "undefined" ? FEATURED_ORDER : []).indexOf(p.id);
-    return i === -1 ? Infinity : i;
+    return i === -1 ? 1e6 : i;
   };
+  // Picks first, then everything else in PROJECTS order (newest first).
+  const featuredOrder = () => projects
+    .map((p, i) => ({ p, i, r: featuredRank(p) }))
+    .sort((a, b) => a.r - b.r || a.i - b.i)
+    .map((x) => x.p);
+  // Number of columns the grid is showing right now (4, 3, 2 or 1).
+  function gridColumns() {
+    const cols = getComputedStyle(gridEl).gridTemplateColumns;
+    const repeat = cols.match(/repeat\(\s*(\d+)/);
+    if (repeat) return Number(repeat[1]);
+    return cols.split(/\s+/).filter((t) => /^[\d.]+px$/.test(t)).length || 1;
+  }
+  // Returns true when the featured set changed.
+  function computeFeatured() {
+    const cols = gridColumns();
+    const count = Math.ceil(Math.max(6, cols * 2) / cols) * cols;
+    const next = new Set(featuredOrder().slice(0, count).map((p) => p.id));
+    const changed = next.size !== featuredIds.size || [...next].some((id) => !featuredIds.has(id));
+    featuredIds = next;
+    return changed;
+  }
   // Projects in a filter, in display order.
   function listFor(key) {
-    const list = projects.filter((p) => matches(p, key));
-    if (key === "featured") list.sort((a, b) => featuredRank(a) - featuredRank(b)); // stable sort keeps PROJECTS order for ties
-    return list;
+    if (key === "featured") return featuredOrder().filter((p) => featuredIds.has(p.id));
+    return projects.filter((p) => matches(p, key));
   }
   const hasValue = (v) => v != null && v !== "" && !(Array.isArray(v) && v.length === 0);
 
@@ -396,9 +422,20 @@
 
   /* ---------- init ---------- */
 
-  renderFilters();
   renderGrid();
+  computeFeatured();
+  renderFilters();
   applyFilter(DEFAULT_FILTER);
+  // Re-fill Featured when the number of grid columns changes (e.g. rotating a tablet).
+  let resizeTimer;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (!computeFeatured()) return;
+      renderFilters();
+      if (activeFilter === "featured") applyFilter("featured");
+    }, 150);
+  });
   const linked = makeFromHash();
   if (linked) openViewer(linked.id);
   else if (location.hash.startsWith(HASH_PREFIX) || location.pathname !== basePath) {

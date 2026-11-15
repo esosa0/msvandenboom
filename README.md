@@ -72,7 +72,7 @@ Open **`projects.js`**. Copy an existing `{ ... },` block inside `PROJECTS`, pas
 },
 ```
 
-Category keys: `featured`, `tops`, `bottoms`, `dresses` (dresses and jumpsuits), `outerwear`, `swimwear`, `kids`, `bags`, `accessories`, `quilting`, `other`. Add `featured` to any make you want on the default view, then add its id to `FEATURED_ORDER` near the top of `projects.js` to set where it appears.
+Category keys: `featured`, `tops`, `bottoms`, `dresses` (dresses and jumpsuits), `outerwear`, `swimwear`, `kids`, `bags`, `accessories`, `quilting`, `other`. Add `featured` to the makes you want to pick for the default view, then add their ids to `FEATURED_ORDER` near the top of `projects.js` to set their order. Featured always fills at least two full rows of the grid (8 makes on a wide screen, 6 on smaller ones): your picks come first, then the newest makes fill any remaining spots.
 
 Tips:
 - Any field can be `""` or left out. Empty rows are hidden automatically.

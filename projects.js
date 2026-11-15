@@ -36,6 +36,9 @@ const FEATURED_ORDER = [
   "fan-dance-crop-top",
   "rainbow-pup-backpack",
   "runway-two-piece",
+  // 7 and 8 only show on wide screens (4 columns)
+  "long-shadow-coat",
+  "six-gardens-quilt",
 ];
 
 const PROJECTS = [
@@ -220,7 +223,7 @@ const PROJECTS = [
     id: "long-shadow-coat",
     title: "Long Shadow Coat",
     company: "Seamwork",
-    categories: ["outerwear"],
+    categories: ["featured", "outerwear"],
     images: [
       { src: "images/jacket-1.jpg", alt: "Ms. Van den Boom in an open-front, knee-length dark coat with a wide shawl collar, worn over green pants" },
       { src: "images/jacket-2.jpg", alt: "Full-length view of the long coat" },
@@ -969,7 +972,7 @@ const PROJECTS = [
     id: "six-gardens-quilt",
     title: "Six Gardens Quilt",
     company: "Suzy Quilts",
-    categories: ["quilting"],
+    categories: ["featured", "quilting"],
     images: [
       { src: "images/flower-quilt-1.jpg", alt: "A wall quilt of six geometric flower blocks in two rows, each in its own palette (orange on pale blue, mint on sage, ochre on cornflower, plum on dusty rose, teal on lilac, peach on coral), with cream sashing, coloured cornerstones and vertical straight-line quilting" },
       { src: "images/flower-quilt-2.jpg", alt: "Close-up of the quilt's corner: coral and peach patchwork with pink straight-line quilting above the cream binding and a Ms Van den Boom Handmade ATX label" },
