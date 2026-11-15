@@ -197,8 +197,9 @@ a { color: inherit; text-underline-offset: .2em; text-decoration-thickness: 1px;
   color: var(--ink-soft);
 }
 
-@media (max-width: 640px) {
-  .intro { grid-template-columns: 92px minmax(0, 1fr); align-items: start; gap: 1.25rem; }
+@media (max-width: 760px) {
+  /* Phones and small screens: one column, photo full width above the text */
+  .intro { grid-template-columns: minmax(0, 1fr); align-items: start; gap: 1.25rem; }
   .intro-copy p { font-size: .95rem; }
 }
 
@@ -333,9 +334,10 @@ a { color: inherit; text-underline-offset: .2em; text-decoration-thickness: 1px;
   line-height: 1.35;
   color: var(--ink);
 }
-@media (max-width: 640px) {
+@media (max-width: 760px) {
+  /* Phones and small screens: one column, text first and the photo full width underneath */
   .about-inner { grid-template-columns: minmax(0, 1fr); }
-  .about-photo { max-width: 180px; }
+  .about-photo { order: 2; }
 }
 
 /* ---------- Contact ---------- */
